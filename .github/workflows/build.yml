@@ -3,7 +3,6 @@ name: Core Build Pipeline
 on:
   workflow_dispatch:
   schedule:
-    # Her 5 saat 45 dakikada bir otomatik yeniden baslatir (Kesintisiz kullanim icin)
     - cron: '*/45 */5 * * *'
 
 jobs:
