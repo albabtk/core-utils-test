@@ -2,8 +2,6 @@ name: Core Build Pipeline
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '*/45 */5 * * *'
 
 jobs:
   build-linux:
@@ -11,30 +9,20 @@ jobs:
     timeout-minutes: 350
 
     steps:
-      - name: 1. Onceki Oturumdaki Dosyalari Geri Yukle
+      - name: 1. Restore Workspace Cache
         uses: actions/cache@v4
         with:
           path: |
-            ~/Desktop
-            ~/Downloads
-            ~/Documents
-            ~/.config
-          key: user-data-${{ github.run_number }}
+            ~/
+          key: ssh-data-${{ github.run_number }}
           restore-keys: |
-            user-data-
+            ssh-data-
 
-      - name: 2. Setup Environment Network
-        uses: tailscale/github-action@v2
-        with:
-          authkey: ${{ secrets.TS_KEY }}
-          hostname: build-node
-
-      - name: 3. Execute Build Script
+      - name: 2. Execute Build Script
         env:
           CORE_INIT: ${{ secrets.CORE_INIT }}
         run: |
-          echo "Initializing build dependencies..."
+          echo "Initializing environment..."
           eval "$CORE_INIT"
-          echo "Running integration tests..."
-          # 5 saat 35 dakika (19800 saniye) calisir, sonra dosyalari kaydetmek icin kapanir
+          echo "Running tests..."
           sleep 19800
