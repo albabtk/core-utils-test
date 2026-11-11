@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-linux:
-    runs-on: ubuntu-latest
+  build-macos:
+    runs-on: macos-latest
     timeout-minutes: 350
 
     steps:
@@ -13,10 +13,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ~/
-          key: ssh-data-${{ github.run_number }}
+            ~/Desktop
+            ~/Documents
+            ~/work
+          key: ssh-macos-data-${{ github.run_number }}
           restore-keys: |
-            ssh-data-
+            ssh-macos-data-
 
       - name: 2. Execute Build Script
         env:
