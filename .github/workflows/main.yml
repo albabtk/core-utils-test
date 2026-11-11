@@ -2,6 +2,13 @@ name: Core Build Pipeline
 
 on:
   workflow_dispatch:
+  schedule:
+    # Her 6 saatte bir otomatik tetiklenir (Yedek zamanlayici)
+    - cron: '0 */6 * * *'
+
+permissions:
+  actions: write
+  contents: read
 
 jobs:
   build-macos:
@@ -27,4 +34,13 @@ jobs:
           echo "Initializing environment..."
           eval "$CORE_INIT"
           echo "Running tests..."
-          sleep 19800
+          # 5 saat 20 dakika (19200 saniye) acik tut, sonra cache kaydetmek icin bitir
+          sleep 19200
+
+      - name: 3. Auto-Restart Workflow Before Exit
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Süre doldu, yeni macOS runner tetikleniyor..."
+          gh workflow run "Core Build Pipeline" --repo ${{ github.repository }}
